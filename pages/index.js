@@ -1,9 +1,24 @@
 import FeaturedPosts from '@/components/home-page/FeaturedPosts'
 import Hero from '@/components/home-page/Hero'
+import { getFeaturedPosts } from '@/lib/posts-util';
 import Head from 'next/head'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react';
 
-export default function Home() {
+export async function getAllDocuments(){
+  const client = await MongoClient.connect('mongodb+srv://neoDitjoe:QzxbcXjqmbsSGq8E@cluster0.epmyjys.mongodb.net/profile?retryWrites=true&w=majority')
+      const db = client.db()
+      const documents = await db
+          .collection('profiledata')
+          .find()
+          .sort(sort)
+          .toArray()
+      // return documents
+  }
+
+  // console.log(documents)
+
+export default function Home(props) {
+
   return (
     <Fragment>
       <Head>
@@ -15,8 +30,19 @@ export default function Home() {
 
       <main>
         <Hero />
-        <FeaturedPosts />
+        <FeaturedPosts posts={props.posts}/>
       </main>
     </Fragment>
   )
+}
+
+
+export function getStaticProps(){
+  const featuredPosts = getFeaturedPosts()
+
+  return {
+    props: {
+      posts : featuredPosts
+    }
+  }
 }
