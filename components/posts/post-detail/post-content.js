@@ -11,14 +11,14 @@ const DUMMY_POSTS = {
     content: '# This is a first post'
 }
 
-export default function PostContent(){
+export default function PostContent({post}){
 
-    const imagePath = `/images/posts/${DUMMY_POSTS.slug}/${DUMMY_POSTS.image}`
+    const imagePath = `/images/posts/${post.slug}/${post.image}`
     return (
 
         <article className={style.content}>
-            <PostHeader title={DUMMY_POSTS.title} image={imagePath}  />
-            <ReactMarkdown>{DUMMY_POSTS.content}</ReactMarkdown> 
+            <PostHeader title={post.title} image={imagePath}  />
+            <ReactMarkdown>{post.content}</ReactMarkdown> 
         </article>
     )
 }
