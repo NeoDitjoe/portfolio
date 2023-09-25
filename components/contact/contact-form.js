@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import classes from 'styles/contact-form.module.css';
-// import Notification from '../ui/notification';
+import Notification from '@/ui/notification';
 
 async function sendContactData(contactDetails) {
   const response = await fetch('/api/contact', {
@@ -23,9 +23,9 @@ function ContactForm() {
   const [enteredEmail, setEnteredEmail] = useState('');
   const [enteredName, setEnteredName] = useState('');
   const [enteredMessage, setEnteredMessage] = useState('');
-  const [requestStatus, setRequestStatus] = useState(); // 'pending', 'success', 'error'
+  const [requestStatus, setRequestStatus] = useState();
   const [requestError, setRequestError] = useState();
-
+  
   useEffect(() => {
     if (requestStatus === 'success' || requestStatus === 'error') {
       const timer = setTimeout(() => {
@@ -35,12 +35,11 @@ function ContactForm() {
 
       return () => clearTimeout(timer);
     }
+
   }, [requestStatus]);
 
   async function sendMessageHandler(event) {
     event.preventDefault();
-
-    // optional: add client-side validation
 
     setRequestStatus('pending');
 
@@ -50,6 +49,7 @@ function ContactForm() {
         name: enteredName,
         message: enteredMessage,
       });
+
       setRequestStatus('success');
       setEnteredMessage('');
       setEnteredEmail('');
@@ -127,13 +127,15 @@ function ContactForm() {
           <button>Send Message</button>
         </div>
       </form>
-      {/* {notification && (
+      {notification && (
         <Notification
           status={notification.status}
           title={notification.title}
           message={notification.message}
         />
-      )} */}
+      )}
+
+      {/* <Notification  title={'thr title'} message={'the message'}/> */}
     </section>
   );
 }
