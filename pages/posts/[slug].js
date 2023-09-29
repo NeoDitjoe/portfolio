@@ -1,9 +1,13 @@
-import PostContent from "@/components/posts/post-detail/post-content";
-import { getPostData, getPostFiles } from "@/lib/posts-util";
+import PostContent from '../../components/posts/post-detail/post-content' 
+import { getPostData, getPostFiles } from "../../lib/posts-util"; 
 import Head from "next/head";
 import { Fragment } from "react";
 
-export default function PostDetailPage(props){
+export default function PostDetailPage(props) {
+    if (!props.post) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Fragment>
             <Head>
@@ -11,33 +15,52 @@ export default function PostDetailPage(props){
                 <meta name="description" content={props.post.excerpt} />
             </Head>
 
-            <PostContent post = {props.post}/>
+            <PostContent post={props.post} />
         </Fragment>
-    )
+    );
 }
 
-export function getStaticProps(context){
-    // const path = context.params.slug
-    const { params } = context
-    const { slug } = params
+export async function getStaticProps(context) {
+    const { params } = context;
+    const { slug } = params;
 
-    const postData = getPostData(slug)
+    try {
+        const postData = getPostData(slug);
 
-    return {
-        props : {
-            post: postData
+        if (!postData) {
+            return {
+                notFound: true,
+            };
         }
+
+        return {
+            props: {
+                post: postData,
+            },
+        };
+    } catch (error) {
+        console.error("Error fetching post data:", error);
+        return {
+            notFound: true, 
+        };
     }
 }
 
+export async function getStaticPaths() {
+    try {
+        const postFileNames = getPostFiles();
 
-export function getStaticPaths(){
-    const postFileNames = getPostFiles()
+        const slugs = postFileNames.map((fileName) => fileName.replace(/\.md$/, ""));
 
-    const slugs = postFileNames.map((fileName) => fileName.replace(/\.md$/, ''))
-
-    return {
-        paths: slugs.map((slug) => ({ params: {slug: slug}})),
-        fallback: true
+        return {
+            paths: slugs.map((slug) => ({ params: { slug: slug } })),
+            fallback: false, 
+        };
+    } catch (error) {
+        console.error("Error fetching post files:", error);
+        return {
+            paths: [],
+            fallback: false,
+        };
     }
 }
