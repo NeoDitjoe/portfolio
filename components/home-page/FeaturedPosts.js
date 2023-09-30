@@ -1,4 +1,4 @@
-import style from 'styles/Featured-posts.module.css'
+import style from 'styles/featured-posts.module.css'
 import PostGrid from '../posts/posts-grid'
 
 export default function FeaturedPosts(props){
